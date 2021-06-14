@@ -19,12 +19,12 @@
 #include <errno.h>
 
 
-#define SAFE_ATOI(a_,l_) do { \
+#define SAFE_ATOI(a_,r_) do { \
   unsigned long long fs_[9] = {  /* All '1's by variable size. */ \
     0, 0xff, 0xffff, 0, 0xffffffff, 0, 0, 0, 0xffffffffffffffff }; \
   errno = 0; \
-  (l_) = fs_[sizeof(l_)]; \
-  if ((l_) < 0) { /* Is result a signed value? */ \
+  (r_) = fs_[sizeof(r_)]; \
+  if ((r_) < 0) { /* Is result a signed value? */ \
     char *in_a_ = a_;  char *temp_ = NULL;  long long llresult_; \
     if (strlen(in_a_) > 2 && *in_a_ == '0' && *(in_a_ + 1) == 'x') { \
       llresult_ = strtoll(in_a_ + 2, &temp_, 16); \
@@ -36,12 +36,12 @@
         errno = EINVAL; \
       } \
       fprintf(stderr, "%s:%d, Error, invalid number for %s: '%s'\n", \
-         __FILE__, __LINE__, #l_, in_a_); \
+         __FILE__, __LINE__, #r_, in_a_); \
     } else { /* strtol thinks success; check for overflow. */ \
-      (l_) = llresult_; /* "return" value of macro */ \
-      if ((l_) != llresult_) { \
+      (r_) = llresult_; /* "return" value of macro */ \
+      if ((r_) != llresult_) { \
         fprintf(stderr, "%s:%d, %s over/under flow: '%s'\n", \
-           __FILE__, __LINE__, #l_, in_a_); \
+           __FILE__, __LINE__, #r_, in_a_); \
         errno = ERANGE; \
       } \
     } \
@@ -57,12 +57,12 @@
         errno = EINVAL; \
       } \
       fprintf(stderr, "%s:%d, Error, invalid number for %s: '%s'\n", \
-         __FILE__, __LINE__, #l_, in_a_); \
+         __FILE__, __LINE__, #r_, in_a_); \
     } else { /* strtol thinks success; check for overflow. */ \
-      (l_) = llresult_; /* "return" value of macro */ \
-      if ((l_) != llresult_) { \
+      (r_) = llresult_; /* "return" value of macro */ \
+      if ((r_) != llresult_) { \
         fprintf(stderr, "%s:%d, %s over/under flow: '%s'\n", \
-           __FILE__, __LINE__, #l_, in_a_); \
+           __FILE__, __LINE__, #r_, in_a_); \
         errno = ERANGE; \
       } \
     } \
@@ -242,13 +242,13 @@ int main(int argc, char **argv)
   ASSRT(errno==0); ASSRT(i==0);
 
   SAFE_ATOI("02147483647", i);
-  ASSRT(errno==0); ASSRT(i==2147483647);
+  ASSRT(errno==0); ASSRT(i==2147483647ll);
 
   SAFE_ATOI("-1", i);
   ASSRT(errno==0); ASSRT(i==-1);
 
   SAFE_ATOI("-2147483648", i);
-  ASSRT(errno==0); ASSRT(i==-2147483648);
+  ASSRT(errno==0); ASSRT(i==-2147483648ll);
 
   fprintf(stderr, "Expected error: ");
   SAFE_ATOI("02147483648", i);
@@ -268,13 +268,13 @@ int main(int argc, char **argv)
   ASSRT(errno!=0);
 
   SAFE_ATOI("0xffffffff", ui);
-  ASSRT(errno==0); ASSRT(ui==4294967295);
+  ASSRT(errno==0); ASSRT(ui==4294967295ll);
 
   SAFE_ATOI("00", ui);
   ASSRT(errno==0); ASSRT(ui==0);
 
   SAFE_ATOI("04294967295", ui);
-  ASSRT(errno==0); ASSRT(ui==4294967295);
+  ASSRT(errno==0); ASSRT(ui==4294967295ll);
 
   fprintf(stderr, "Expected error: ");
   SAFE_ATOI("-1", ui);
@@ -301,19 +301,19 @@ int main(int argc, char **argv)
 
 
     SAFE_ATOI("0x7fffffff", l);
-    ASSRT(errno==0); ASSRT(l==2147483647);
+    ASSRT(errno==0); ASSRT(l==2147483647ll);
 
     SAFE_ATOI("00", l);
     ASSRT(errno==0); ASSRT(l==0);
 
     SAFE_ATOI("02147483647", l);
-    ASSRT(errno==0); ASSRT(l==2147483647);
+    ASSRT(errno==0); ASSRT(l==2147483647ll);
 
     SAFE_ATOI("-1", l);
     ASSRT(errno==0); ASSRT(l==-1);
 
     SAFE_ATOI("-2147483648", l);
-    ASSRT(errno==0); ASSRT(l==-2147483648);
+    ASSRT(errno==0); ASSRT(l==-2147483648ll);
 
     fprintf(stderr, "Expected error: ");
     SAFE_ATOI("02147483648", l);
@@ -333,13 +333,13 @@ int main(int argc, char **argv)
     ASSRT(errno!=0);
 
     SAFE_ATOI("0xffffffffffffffff", ul);
-    ASSRT(errno==0); ASSRT(ul==4294967295);
+    ASSRT(errno==0); ASSRT(ul==4294967295ll);
 
     SAFE_ATOI("00", ul);
     ASSRT(errno==0); ASSRT(ul==0);
 
     SAFE_ATOI("04294967295", ul);
-    ASSRT(errno==0); ASSRT(ul==4294967295);
+    ASSRT(errno==0); ASSRT(ul==4294967295ll);
 
     fprintf(stderr, "Expected error: ");
     SAFE_ATOI("-1", ul);
@@ -363,19 +363,19 @@ int main(int argc, char **argv)
 
 
     SAFE_ATOI("0x7fffffffffffffff", l);
-    ASSRT(errno==0); ASSRT(l==9223372036854775807l);
+    ASSRT(errno==0); ASSRT(l==9223372036854775807ll);
 
     SAFE_ATOI("00", l);
     ASSRT(errno==0); ASSRT(l==0);
 
     SAFE_ATOI("09223372036854775807", l);
-    ASSRT(errno==0); ASSRT(l==9223372036854775807l);
+    ASSRT(errno==0); ASSRT(l==9223372036854775807ll);
 
     SAFE_ATOI("-1", l);
     ASSRT(errno==0); ASSRT(l==-1);
 
     SAFE_ATOI("-9223372036854775808", l);
-    ASSRT(errno==0); ASSRT(l==-9223372036854775808l);
+    ASSRT(errno==0); ASSRT(l==-9223372036854775808ll);
 
     fprintf(stderr, "Expected error: ");
     SAFE_ATOI("09223372036854775808", l);
@@ -395,13 +395,13 @@ int main(int argc, char **argv)
     ASSRT(errno!=0);
 
     SAFE_ATOI("0xffffffffffffffff", ul);
-    ASSRT(errno==0); ASSRT(ul==18446744073709551615ul);
+    ASSRT(errno==0); ASSRT(ul==18446744073709551615ull);
 
     SAFE_ATOI("00", ul);
     ASSRT(errno==0); ASSRT(ul==0);
 
     SAFE_ATOI("018446744073709551615", ul);
-    ASSRT(errno==0); ASSRT(ul==18446744073709551615ul);
+    ASSRT(errno==0); ASSRT(ul==18446744073709551615ull);
 
     /* The macro can't detect the illegal use of a negative value because
      * we are already at 64-bits, so the sign extension can't be counted on.

@@ -111,3 +111,33 @@ In those cases, leave the "printf"s, and add an "exit(1)" after each.
 
 Note that, unlike the strtol() family of functions,
 the caller of this macro does *not* need to set errno to zero.
+
+## Portability
+
+I tried to make this pretty portable.
+It should work on Unix and Windows, 32 and 64 bit,
+with at least with fairly normal processors.
+
+But there are a few things that will break the code on some
+esoteric platforms.
+
+1. The code generally assumes that a "char" is 8 bits, "short" is 16 bits,
+and "long long" is 64 bits.
+(But note that it does *not* assume the length of a "long" or an "int".)
+2. The "fs_[9]" array is indexed by "sizeof(r_)".
+It assumes that r_ will only ever be 1, 2, 4, or 8 bytes long.
+3. Strangely, LLVM on my Mac throws two warnings:
+````
+safe_atoi.c:378:32: warning: integer literal is too large to be represented in a
+      signed integer type, interpreting as unsigned
+      [-Wimplicitly-unsigned-literal]
+    ASSRT(errno==0); ASSRT(l==-9223372036854775808l);
+                               ^
+safe_atoi.c:445:31: warning: integer literal is too large to be represented in a
+      signed integer type, interpreting as unsigned
+      [-Wimplicitly-unsigned-literal]
+  ASSRT(errno==0); ASSRT(ll==-9223372036854775808ll);
+                              ^
+````
+But those literals are perfectly legal "long long" values,
+so what's the problem???
