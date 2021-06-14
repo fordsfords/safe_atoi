@@ -5,7 +5,7 @@ C Macro for converting Ascii to integer.
 
 I want there to be NO barriers to using this code, so I am releasing it to the public domain.  But "public domain" does not have an internationally agreed upon definition, so I use CC0:
 
-Copyright 2020 Steven Ford http://geeky-boy.com and licensed
+Copyright 2021 Steven Ford http://geeky-boy.com and licensed
 "public domain" style under
 [CC0](http://creativecommons.org/publicdomain/zero/1.0/): 
 ![CC0](https://licensebuttons.net/p/zero/1.0/88x31.png "CC0")
@@ -25,7 +25,7 @@ at http://geeky-boy.com.  Can't see it?  Keep looking.
 This C file is only intended to deliver a macro that I use a
 fair amount: SAFE_ATOI.
 
-See [strtol preferred over atoi https://blog.geeky-boy.com/2014/04/strtoul-preferred-over-atoi.html]
+See [strtol preferred over atoi](https://blog.geeky-boy.com/2014/04/strtoul-preferred-over-atoi.html)
 for why I wrote this macro (short version: strtol detects user mistakes).
 But note that the macro has evolved since that blog post was written.
 
