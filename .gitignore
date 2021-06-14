@@ -1,5 +1,5 @@
 # Executable
-safe_atol
+safe_atoi
 
 # Prerequisites
 *.d
