@@ -126,7 +126,7 @@ esoteric platforms.
 The actual macro code only assumes "long long" is 64-bits.
 2. The "fs_[9]" array is indexed by "sizeof(r_)".
 It assumes that r_ will only ever be 1, 2, 4, or 8 bytes long.
-3. Strangely, LLVM on my Mac throws two warnings:
+3. Strangely, the LLVM C compiler on my Mac throws two warnings:
 ````
 safe_atoi.c:378:32: warning: integer literal is too large to be represented in a
       signed integer type, interpreting as unsigned
