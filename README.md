@@ -22,7 +22,7 @@ at http://geeky-boy.com.  Can't see it?  Keep looking.
 
 ## Introduction
 
-This C file is only intended to deliver a macro that I use a
+This C include file is only intended to deliver a macro that I use a
 fair amount: SAFE_ATOI.
 
 See [strtol preferred over atoi](https://blog.geeky-boy.com/2014/04/strtoul-preferred-over-atoi.html)
@@ -30,7 +30,7 @@ for why I wrote this macro (short version: strtol detects user mistakes).
 But note that the macro has evolved since that blog post was written.
 
 The C program "safe_atoi.c" tests the macro, but you should use it
-by simply copy/pasting the macro into your own source files.
+by simply copy/pasting the macro from safe_atoi.h into your own source files.
 
 Here's an example usage:
 ````c
@@ -93,24 +93,6 @@ I.e.
 ````
 will succeed.
 
-## Change the Error Handling
-
-You probably want to change the error handling in these macros.
-Currently, if there is an error,
-it prints a programmer-friendly (i.e. not-very-user-friendly) message to
-standard error and returns with "errno" set to non-zero.
-But printing errors (especially non-user-friendly ones) is generally
-considered poor form for general utilities,
-so many users will want to delete the "printf"s and add better,
-context-appropriate messages at the caller.
-
-But in some use cases, like validating command-line options for tools,
-user-friendliness is not as important, and it is convenient for the
-macro to print a programmer-friendly error message and then exit.
-In those cases, leave the "printf"s, and add an "exit(1)" after each.
-
-Note that, unlike the strtol() family of functions,
-the caller of this macro does *not* need to set errno to zero.
 
 ## Portability
 
