@@ -22,20 +22,27 @@ extern "C" {
 
 
 #define SAFE_ATOI(a_,r_) do { \
+  char *in_a_ = (a_); \
+  int new_errno_; \
   unsigned long long fs_[9] = {  /* All '1's by variable size. */ \
     0, 0xff, 0xffff, 0, 0xffffffff, 0, 0, 0, 0xffffffffffffffff }; \
-  errno = 0; \
   (r_) = fs_[sizeof(r_)]; \
   if ((r_) < 0) { /* Is result a signed value? */ \
-    char *in_a_ = a_;  char *temp_ = NULL;  long long llresult_; \
-    if (strlen(in_a_) > 2 && *in_a_ == '0' && *(in_a_ + 1) == 'x') { \
-      llresult_ = strtoll(in_a_ + 2, &temp_, 16); \
+    char *temp_ = NULL;  long long llresult_; \
+    if (strlen(in_a_) > 2 && in_a_[0] == '0' && (in_a_[1] == 'x' || in_a_[1] == 'X')) { \
+      in_a_ += 2;  /* Skip past '0x'. */ \
+      errno = 0; \
+      llresult_ = strtoll(in_a_, &temp_, 16); \
+      new_errno_ = errno; \
+fprintf(stderr, "???1, new_errno_=%d, in_a_='%p', llresult_=%lld, temp_=%p\n", new_errno_, in_a_, llresult_, temp_); \
     } else { \
+      errno = 0; \
       llresult_ = strtoll(in_a_, &temp_, 10); \
+      new_errno_ = errno; \
     } \
-    if (errno != 0 || temp_ == in_a_ || temp_ == NULL || *temp_ != '\0') { \
-      if (errno == 0) { \
-        errno = EINVAL; \
+    if (new_errno_ != 0 || temp_ == in_a_ || temp_ == NULL || *temp_ != '\0') { \
+      if (new_errno_ == 0) { \
+        new_errno_ = EINVAL; \
       } \
       fprintf(stderr, "%s:%d, Error, invalid number for %s: '%s'\n", \
          __FILE__, __LINE__, #r_, in_a_); \
@@ -44,19 +51,24 @@ extern "C" {
       if ((r_) != llresult_) { \
         fprintf(stderr, "%s:%d, %s over/under flow: '%s'\n", \
            __FILE__, __LINE__, #r_, in_a_); \
-        errno = ERANGE; \
+        new_errno_ = ERANGE; \
       } \
     } \
   } else { \
-    char *in_a_ = a_;  char *temp_ = NULL;  unsigned long long llresult_; \
-    if (strlen(in_a_) > 2 && *in_a_ == '0' && *(in_a_ + 1) == 'x') { \
-      llresult_ = strtoull(in_a_ + 2, &temp_, 16); \
+    char *temp_ = NULL;  unsigned long long llresult_; \
+    if (strlen(in_a_) > 2 && in_a_[0] == '0' && (in_a_[1] == 'x' || in_a_[1] == 'X')) { \
+      in_a_ += 2;  /* Skip past '0x'. */ \
+      errno = 0; \
+      llresult_ = strtoull(in_a_, &temp_, 16); \
+      new_errno_ = errno; \
     } else { \
+      errno = 0; \
       llresult_ = strtoull(in_a_, &temp_, 10); \
+      new_errno_ = errno; \
     } \
-    if (errno != 0 || temp_ == in_a_ || temp_ == NULL || *temp_ != '\0') { \
-      if (errno == 0) { \
-        errno = EINVAL; \
+    if (new_errno_ != 0 || temp_ == in_a_ || temp_ == NULL || *temp_ != '\0') { \
+      if (new_errno_ == 0) { \
+        new_errno_ = EINVAL; \
       } \
       fprintf(stderr, "%s:%d, Error, invalid number for %s: '%s'\n", \
          __FILE__, __LINE__, #r_, in_a_); \
@@ -65,10 +77,11 @@ extern "C" {
       if ((r_) != llresult_) { \
         fprintf(stderr, "%s:%d, %s over/under flow: '%s'\n", \
            __FILE__, __LINE__, #r_, in_a_); \
-        errno = ERANGE; \
+        new_errno_ = ERANGE; \
       } \
     } \
   } \
+  errno = new_errno_; \
 } while (0)
 
 
