@@ -34,7 +34,6 @@ extern "C" {
       errno = 0; \
       llresult_ = strtoll(in_a_, &temp_, 16); \
       new_errno_ = errno; \
-fprintf(stderr, "???1, new_errno_=%d, in_a_='%p', llresult_=%lld, temp_=%p\n", new_errno_, in_a_, llresult_, temp_); \
     } else { \
       errno = 0; \
       llresult_ = strtoll(in_a_, &temp_, 10); \
