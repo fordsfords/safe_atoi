@@ -1,6 +1,12 @@
 # Scratch files
+x
 x.*
 *.x
+*.tmp
+tmp.*
+*.tmp[0-9]
+~*
+.DS_Store
 
 # Executable
 safe_atoi
